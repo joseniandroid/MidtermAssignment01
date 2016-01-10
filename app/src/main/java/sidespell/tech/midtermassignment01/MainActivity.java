@@ -11,20 +11,21 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 
+import sidespell.tech.midtermassignment01.widgets.ClearableAutoCompleteTextView;
+
 public class MainActivity extends AppCompatActivity {
 
-    private FloatingActionButton mFabDeleteAll;
+    private FloatingActionButton          mFabDeleteAll;
+    private ClearableAutoCompleteTextView mAutoCompleteTextView;
 
     private ArrayAdapter<String> mCurrencyListAdapter;
 
     private TypedArray mCurrencyList;
     private TypedArray mCountryList;
-    private AutoCompleteTextView mAutoCompleteTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +36,8 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mAutoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView);
+        mAutoCompleteTextView =
+                (ClearableAutoCompleteTextView) findViewById(R.id.autoCompleteTextView);
         ListView lvCurrencies = (ListView) findViewById(R.id.lvCurrencies);
         mFabDeleteAll = (FloatingActionButton) findViewById(R.id.fabDeleteAll);
         //endregion
