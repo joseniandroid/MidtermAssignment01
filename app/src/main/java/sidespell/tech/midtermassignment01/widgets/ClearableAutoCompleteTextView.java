@@ -17,7 +17,7 @@ import android.widget.AutoCompleteTextView;
  */
 public class ClearableAutoCompleteTextView extends AutoCompleteTextView {
 
-    /***
+    /**
      * The interface to implement when you want to handle other operations when the clear button
      * is pressed.
      */
@@ -25,12 +25,21 @@ public class ClearableAutoCompleteTextView extends AutoCompleteTextView {
         void onClear();
     }
 
-    private OnClearListener mClearListener;
+    /**
+     * The interface to implement when you want to convert the selected item of this
+     * {@link ClearableAutoCompleteTextView} into a sequence of characters.
+     */
+    public interface OnConvertSelectionToStringListener {
+        CharSequence convertSelectionToString(Object selectedItem);
+    }
+
+    private OnClearListener                    mClearListener;
+    private OnConvertSelectionToStringListener mConvertSelectionToStringListener;
 
     private Drawable mClearImgDrawable = getResources()
             .getDrawable(android.R.drawable.ic_menu_close_clear_cancel);
 
-    /***
+    /**
      * Required constructor.
      */
     public ClearableAutoCompleteTextView(Context context) {
@@ -38,7 +47,7 @@ public class ClearableAutoCompleteTextView extends AutoCompleteTextView {
         init();
     }
 
-    /***
+    /**
      * Required constructor.
      */
     public ClearableAutoCompleteTextView(Context context, AttributeSet attrs) {
@@ -46,7 +55,7 @@ public class ClearableAutoCompleteTextView extends AutoCompleteTextView {
         init();
     }
 
-    /***
+    /**
      * Required constructor.
      */
     public ClearableAutoCompleteTextView(Context context, AttributeSet attrs, int defStyle) {
@@ -54,15 +63,10 @@ public class ClearableAutoCompleteTextView extends AutoCompleteTextView {
         init();
     }
 
-    /***
+    /**
      * Initializes a new instance of {@link ClearableAutoCompleteTextView}.
      */
     private void init() {
-        if (mClearImgDrawable == null) {
-            mClearImgDrawable = getResources()
-                    .getDrawable(android.R.drawable.ic_menu_close_clear_cancel);
-        }
-
         hideClearButton();
 
         // Fires up the handler if clear button is pressed
@@ -115,29 +119,57 @@ public class ClearableAutoCompleteTextView extends AutoCompleteTextView {
         });
     }
 
-    /***
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected CharSequence convertSelectionToString(Object selectedItem) {
+        if (mConvertSelectionToStringListener != null) {
+            return mConvertSelectionToStringListener.convertSelectionToString(selectedItem);
+        }
+
+        return super.convertSelectionToString(selectedItem);
+    }
+
+    /**
      * Gets an instance of the {@link OnClearListener}.
      */
-    public OnClearListener getClearListener() {
+    public OnClearListener getOnClearListener() {
         return mClearListener;
     }
 
-    /***
+    /**
      * Sets a new instance of {@link OnClearListener}.
      */
-    public ClearableAutoCompleteTextView setClearListener(OnClearListener clearListener) {
+    public ClearableAutoCompleteTextView setOnClearListener(OnClearListener clearListener) {
         mClearListener = clearListener;
         return this;
     }
 
-    /***
+    /**
+     * Gets an instance of {@link OnConvertSelectionToStringListener}.
+     */
+    public OnConvertSelectionToStringListener getOnConvertSelectionToStringListener() {
+        return mConvertSelectionToStringListener;
+    }
+
+    /**
+     * Sets a new instance of {@link OnConvertSelectionToStringListener}.
+     */
+    public ClearableAutoCompleteTextView setOnConvertSelectionToStringListener(
+            OnConvertSelectionToStringListener convertSelectionToStringListener) {
+        mConvertSelectionToStringListener = convertSelectionToStringListener;
+        return this;
+    }
+
+    /**
      * Gets the clear button image drawable.
      */
     public Drawable getClearImgDrawable() {
         return mClearImgDrawable;
     }
 
-    /***
+    /**
      * Sets the drawable used for the clear button.
      */
     public ClearableAutoCompleteTextView setClearImgDrawable(Drawable clearImgDrawable) {
@@ -145,14 +177,14 @@ public class ClearableAutoCompleteTextView extends AutoCompleteTextView {
         return this;
     }
 
-    /***
+    /**
      * Shows the clear button.
      */
     public void showClearButton() {
         setCompoundDrawablesWithIntrinsicBounds(null, null, mClearImgDrawable, null);
     }
 
-    /***
+    /**
      * Hides the clear button.
      */
     public void hideClearButton() {
